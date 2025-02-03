@@ -1,184 +1,453 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Square Feet Calculator</title>
     <style>
-        /* General Styles */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f9f9f9;
-        }
+      /* General Styles */
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+        color: #333;
+      }
 
-        h1 {
-            text-align: center;
-            color: #333;
-        }
+      h1 {
+        text-align: center;
+        color: #fff;
+        padding: 20px;
+        background: rgba(0, 0, 0, 0.5);
+        margin: 0;
+      }
 
-        /* Table Styles for Desktop */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            background-color: #fff;
-        }
+      /* Tab Styles */
+      .tab {
+        display: flex;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.8);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
 
-        th, td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: center;
+      .tab button {
+        flex: 1;
+        padding: 15px;
+        font-size: 18px;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        background: #007bff;
+        color: white;
+        transition: background 0.3s ease;
+      }
+
+      .tab button:hover {
+        background: #0056b3;
+      }
+
+      .tab button.active {
+        background: #004080;
+      }
+
+      /* Tab Content Styles */
+      .tabcontent {
+        display: none;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.9);
+        margin: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Table Styles */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        background: #fff;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: center;
+      }
+
+      th {
+        background: #007bff;
+        color: white;
+        font-weight: bold;
+      }
+
+      input {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+        text-align: center;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      /* Mobile Styles */
+      @media (max-width: 768px) {
+        table,
+        thead,
+        tbody,
+        th,
+        td,
+        tr {
+          display: block;
         }
 
         th {
-            background-color: #f2f2f2;
-            font-weight: bold;
+          display: none;
+        }
+
+        tr {
+          margin-bottom: 20px;
+          border: 1px solid #ddd;
+          border-radius: 8px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        td {
+          border: none;
+          border-bottom: 1px solid #ddd;
+          position: relative;
+          padding-left: 50%;
+          text-align: right;
+        }
+
+        td::before {
+          content: attr(data-label);
+          position: absolute;
+          left: 10px;
+          width: 45%;
+          padding-right: 10px;
+          text-align: left;
+          font-weight: bold;
+          color: #333;
         }
 
         input {
-            width: 100%;
-            padding: 8px;
-            box-sizing: border-box;
-            text-align: center;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+          width: 100%;
+          text-align: right;
+        }
+      }
+
+      /* Button Styles */
+      button {
+        display: inline-block;
+        margin: 10px;
+        padding: 10px 20px;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background 0.3s ease;
+      }
+
+      button:hover {
+        background: #0056b3;
+      }
+
+      /* Saved Data Table Styles */
+      #savedDataTable {
+        margin-top: 40px;
+        background: #fff;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      #savedDataTable th {
+        background: #007bff;
+        color: white;
+      }
+
+      /* Add this CSS to make the table responsive */
+      .responsive-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .responsive-table th,
+      .responsive-table td {
+        padding: 8px;
+        text-align: left;
+        border: 1px solid #ddd;
+      }
+
+      @media screen and (max-width: 600px) {
+        .responsive-table thead {
+          display: none;
         }
 
-        /* Mobile Styles */
-        @media (max-width: 768px) {
-            table, thead, tbody, th, td, tr {
-                display: block;
-            }
-
-            th {
-                display: none; /* Hide table headers on mobile */
-            }
-
-            tr {
-                margin-bottom: 20px;
-                border: 1px solid #ddd;
-                border-radius: 8px;
-                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            }
-
-            td {
-                border: none;
-                border-bottom: 1px solid #ddd;
-                position: relative;
-                padding-left: 50%;
-                text-align: right;
-            }
-
-            td::before {
-                content: attr(data-label);
-                position: absolute;
-                left: 10px;
-                width: 45%;
-                padding-right: 10px;
-                text-align: left;
-                font-weight: bold;
-                color: #333;
-            }
-
-            input {
-                width: 100%;
-                text-align: right;
-            }
-            .squareFeet {
-                background-color: #e7dddd;
-                color: red;
-            }
+        .responsive-table tr {
+          display: block;
+          margin-bottom: 10px;
         }
 
-        /* Button Styles */
-        button {
-            display: block;
-            margin: 20px auto;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
+        .responsive-table td {
+          display: block;
+          text-align: right;
+          padding-left: 50%;
+          position: relative;
         }
 
-        button:hover {
-            background-color: #0056b3;
+        .responsive-table td::before {
+          content: attr(data-label);
+          position: absolute;
+          left: 0;
+          width: 50%;
+          padding-left: 10px;
+          font-weight: bold;
+          text-align: left;
         }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Square Feet Calculator</h1>
-    <table id="dataTable">
+
+    <!-- Tab Links -->
+    <div class="tab">
+      <button
+        class="tablinks"
+        onclick="openTab(event, 'Inches')"
+        id="defaultOpen"
+      >
+        Inches
+      </button>
+      <button class="tablinks" onclick="openTab(event, 'Centimeters')">
+        Centimeters
+      </button>
+    </div>
+
+    <!-- Tab Content for Inches -->
+    <div id="Inches" class="tabcontent">
+      <h1>Inches</h1>
+      <table id="dataTableInches" class="responsive-table">
         <thead>
-            <tr>
-                <th>Size 1</th>
-                <th>Size 2</th>
-                <th>Size 3</th>
-                <th>Size 4</th>
-                <th>Total Size</th>
-                <th>Length</th>
-                <th>Total Length</th>
-                <th>Square Feet</th>
-            </tr>
+          <tr>
+            <th>Size 1</th>
+            <th>Size 2</th>
+            <th>Size 3</th>
+            <th>Size 4</th>
+            <th>Total Size</th>
+            <th>Length</th>
+            <th>Total Length</th>
+            <th>Square Feet</th>
+            <th>Action</th>
+          </tr>
         </thead>
         <tbody>
-            <!-- Rows will be dynamically generated by JavaScript -->
+          <!-- Rows will be dynamically generated by JavaScript -->
         </tbody>
+      </table>
+      <button onclick="addRow('Inches')">Add Row</button>
+    </div>
+
+    <!-- Tab Content for Centimeters -->
+    <div id="Centimeters" class="tabcontent">
+      <h1>Centimeters</h1>
+      <table id="dataTableCentimeters" class="responsive-table">
+        <thead>
+          <tr>
+            <th>Size 1</th>
+            <th>Size 2</th>
+            <th>Size 3</th>
+            <th>Size 4</th>
+            <th>Total Size</th>
+            <th>Length</th>
+            <th>Total Length</th>
+            <th>Square Feet</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Rows will be dynamically generated by JavaScript -->
+        </tbody>
+      </table>
+      <button onclick="addRow('Centimeters')">Add Row</button>
+    </div>
+
+    <!-- Saved Data Table -->
+    <h2 style="text-align: center; color: white">Saved Data</h2>
+    <button onclick="downloadExcel()" style="display: block; margin: 20px auto">
+      Download Excel
+    </button>
+    <table id="savedDataTable" class="responsive-table">
+      <thead>
+        <tr>
+          <th>Size 1</th>
+          <th>Size 2</th>
+          <th>Size 3</th>
+          <th>Size 4</th>
+          <th>Total Size</th>
+          <th>Length</th>
+          <th>Total Length</th>
+          <th>Square Feet</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Saved rows will be dynamically added here -->
+      </tbody>
     </table>
 
-    <button onclick="addRow()">Add Row</button>
-
     <script>
-        // Function to calculate Total Size, Total Length, and Square Feet
-        function calculateRow(row) {
-            const size1 = parseFloat(row.querySelector('.size1').value) || 0;
-            const size2 = parseFloat(row.querySelector('.size2').value) || 0;
-            const size3 = parseFloat(row.querySelector('.size3').value) || 0;
-            const size4 = parseFloat(row.querySelector('.size4').value) || 0;
-            const length = parseFloat(row.querySelector('.length').value) || 0;
+      // Function to open tabs
+      function openTab(evt, tabName) {
+        const tabcontent = document.querySelectorAll(".tabcontent");
+        tabcontent.forEach((tab) => (tab.style.display = "none"));
 
-            // Calculate Total Size
-            const totalSize = size1 + size2 + size3 + size4;
-            row.querySelector('.totalSize').textContent = totalSize.toFixed(1);
+        const tablinks = document.querySelectorAll(".tablinks");
+        tablinks.forEach((tab) => tab.classList.remove("active"));
 
-            // Calculate Total Length
-            const totalLength = totalSize * length;
-            row.querySelector('.totalLength').textContent = totalLength.toFixed(1);
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.classList.add("active");
+      }
 
-            // Calculate Square Feet
-            const squareFeet = totalLength / 144;
-            row.querySelector('.squareFeet').textContent = squareFeet.toFixed(2);
+      // Function to calculate Total Size, Total Length, and Square Feet
+      function calculateRow(row, unit) {
+        // const size1 = parseFloat(row.querySelector('.size1').value) || 0;
+        // const size2 = parseFloat(row.querySelector('.size2').value) || 0;
+        // const size3 = parseFloat(row.querySelector('.size3').value) || 0;
+        // const size4 = parseFloat(row.querySelector('.size4').value) || 0;
+        // const length = parseFloat(row.querySelector('.length').value) || 0;
+
+        const size1 = parseFloat(row.querySelector(".size1").value) || 0;
+        const size2 = parseFloat(row.querySelector(".size2").value) || 0;
+        const size3 = parseFloat(row.querySelector(".size3").value) || 0;
+        const size4 = parseFloat(row.querySelector(".size4").value) || 0;
+        const length = parseFloat(row.querySelector(".length").value) || 0;
+
+        // Convert centimeters to inches if necessary
+        const conversionFactor = unit === "Centimeters" ? 1 : 1; // 1 cm = 0.393701 inches
+
+        // Calculate Total Size
+        // const totalSize = (size1 + size2 + size3 + size4) * conversionFactor;
+        const totalSize = size1 + size2 + size3 + size4;
+        row.querySelector(".totalSize").textContent = totalSize.toFixed(1);
+
+        // Calculate Total Length
+        // const totalLength = totalSize * length * conversionFactor;
+        // const totalLength = totalSize / 10.76;
+        // row.querySelector('.totalLength').textContent = totalLength.toFixed(1);
+
+        // Calculate Square Feet
+        // const squareFeet = totalLength / 144;
+        // row.querySelector('.squareFeet').textContent = squareFeet.toFixed(2);
+
+        if (unit === "Centimeters") {
+          // Calculate Total Length for Centimeters
+          totalLength = totalSize * length;
+          // Calculate Square Feet for Centimeters
+          squareFeet = totalLength / 10.76;
+        } else {
+          // Calculate Total Length for Inches
+          totalLength = totalSize * length;
+          // Calculate Square Feet for Inches
+          squareFeet = totalLength / 144;
         }
 
-        // Function to add a new row to the table
-        function addRow() {
-            const table = document.querySelector('#dataTable tbody');
-            const newRow = document.createElement('tr');
+        row.querySelector(".totalLength").textContent = totalLength.toFixed(1);
+        row.querySelector(".squareFeet").textContent = squareFeet.toFixed(2);
+      }
 
-            newRow.innerHTML = `
-                <td data-label="Size 1"><input type="number" class="size1" oninput="calculateRow(this.parentElement.parentElement)"></td>
-                <td data-label="Size 2"><input type="number" class="size2" oninput="calculateRow(this.parentElement.parentElement)"></td>
-                <td data-label="Size 3"><input type="number" class="size3" oninput="calculateRow(this.parentElement.parentElement)"></td>
-                <td data-label="Size 4"><input type="number" class="size4" oninput="calculateRow(this.parentElement.parentElement)"></td>
+      // Function to add a new row to the table
+      function addRow(unit) {
+        const table = document.querySelector(`#dataTable${unit} tbody`);
+        const newRow = document.createElement("tr");
+
+        newRow.innerHTML = `
+                <td data-label="Size 1"><input type="number" class="size1" oninput="calculateRow(this.parentElement.parentElement, '${unit}')"></td>
+                <td data-label="Size 2"><input type="number" class="size2" oninput="calculateRow(this.parentElement.parentElement, '${unit}')"></td>
+                <td data-label="Size 3"><input type="number" class="size3" oninput="calculateRow(this.parentElement.parentElement, '${unit}')"></td>
+                <td data-label="Size 4"><input type="number" class="size4" oninput="calculateRow(this.parentElement.parentElement, '${unit}')"></td>
                 <td data-label="Total Size" class="totalSize">0.0</td>
-                <td data-label="Length"><input type="number" class="length" oninput="calculateRow(this.parentElement.parentElement)"></td>
+                <td data-label="Length"><input type="number" class="length" oninput="calculateRow(this.parentElement.parentElement, '${unit}')"></td>
                 <td data-label="Total Length" class="totalLength">0.0</td>
                 <td data-label="Square Feet" class="squareFeet">0.00</td>
+                <td><button onclick="saveRow(this.parentElement.parentElement, '${unit}')">Save</button></td>
             `;
 
-            table.appendChild(newRow);
-        }
+        table.appendChild(newRow);
+      }
 
-        // Initialize the table with 2 rows (as in the Excel example)
-        window.onload = function () {
-            addRow();
-            addRow();
-        };
+      // Function to save a row to the saved data table
+      function saveRow(row, unit) {
+        const savedTable = document.querySelector("#savedDataTable tbody");
+        const newRow = document.createElement("tr");
+
+        newRow.innerHTML = `
+                <td>${row.querySelector(".size1").value}</td>
+                <td>${row.querySelector(".size2").value}</td>
+                <td>${row.querySelector(".size3").value}</td>
+                <td>${row.querySelector(".size4").value}</td>
+                <td>${row.querySelector(".totalSize").textContent}</td>
+                <td>${row.querySelector(".length").value}</td>
+                <td>${row.querySelector(".totalLength").textContent}</td>
+                <td>${row.querySelector(".squareFeet").textContent}</td>
+            `;
+
+        savedTable.appendChild(newRow);
+      }
+
+      // Function to download the saved data as an Excel file
+      function downloadExcel() {
+        const table = document.querySelector('#savedDataTable');
+            const rows = table.querySelectorAll('tr');
+            let csv = [];
+
+        // Extract headers
+        const headers = [];
+            table.querySelectorAll('th').forEach(header => {
+                headers.push(header.textContent);
+            });
+            csv.push(headers.join(','));
+
+        // Extract data rows
+        rows.forEach(row => {
+                const rowData = [];
+                row.querySelectorAll('td').forEach(cell => {
+                    rowData.push(cell.textContent);
+                });
+                csv.push(rowData.join(','));
+            });
+
+        // Create a CSV file
+        const csvContent = "data:text/csv;charset=utf-8," + csv.join('\n');
+        const encodedUri = encodeURI(csvContent);
+
+        // Create a temporary link to trigger the download
+        const link = document.createElement('a');
+            link.setAttribute('href', encodedUri);
+            link.setAttribute('download', 'saved_data.csv');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            // Show the saved data table and heading
+            document.getElementById('savedDataHeading').style.display = 'block';
+            document.getElementById('savedDataTable').style.display = 'table';
+        
+      }
+
+      // Initialize the table with 2 rows (as in the Excel example)
+      window.onload = function () {
+        document.getElementById("defaultOpen").click(); // Open the default tab
+        document.getElementById("defaultOpen").click(); // Open the default tab
+            addRow("Inches");
+            addRow("Centimeters");
+      };
     </script>
-</body>
+  </body>
 </html>
