@@ -295,13 +295,14 @@
           <th>Length</th>
           <th>Total Length</th>
           <th>Square Feet</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody>
         <!-- Saved rows will be dynamically added here -->
       </tbody>
     </table>
-
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
     <script>
       // Function to open tabs
       function openTab(evt, tabName) {
@@ -355,7 +356,8 @@
           // Calculate Total Length for Inches
           totalLength = totalSize * length;
           // Calculate Square Feet for Inches
-          squareFeet = totalLength / 144;
+          // squareFeet = totalLength / 144;
+          squareFeet = (totalLength / 1000000) * 10.7639;
         }
 
         row.querySelector(".totalLength").textContent = totalLength.toFixed(1);
@@ -396,57 +398,68 @@
                 <td>${row.querySelector(".length").value}</td>
                 <td>${row.querySelector(".totalLength").textContent}</td>
                 <td>${row.querySelector(".squareFeet").textContent}</td>
+                <td>
+                  <button onclick="this.parentElement.parentElement.remove()">Remove</button>
+                </td>
             `;
 
         savedTable.appendChild(newRow);
       }
 
       // Function to download the saved data as an Excel file
+      // function downloadExcel() {
+      //   const table = document.querySelector('#savedDataTable');
+      //       const rows = table.querySelectorAll('tr');
+      //       let csv = [];
+
+      //   // Extract headers
+      //   const headers = [];
+      //       table.querySelectorAll('th').forEach(header => {
+      //           headers.push(header.textContent);
+      //       });
+      //       csv.push(headers.join(','));
+
+      //   // Extract data rows
+      //   rows.forEach(row => {
+      //           const rowData = [];
+      //           row.querySelectorAll('td').forEach(cell => {
+      //               rowData.push(cell.textContent);
+      //           });
+      //           csv.push(rowData.join(','));
+      //       });
+
+      //   // Create a CSV file
+      //   const csvContent = "data:text/csv;charset=utf-8," + csv.join('\n');
+      //   const encodedUri = encodeURI(csvContent);
+
+      //   // Create a temporary link to trigger the download
+      //   const link = document.createElement('a');
+      //       link.setAttribute('href', encodedUri);
+      //       link.setAttribute('download', 'saved_data.csv');
+      //       document.body.appendChild(link);
+      //       link.click();
+      //       document.body.removeChild(link);
+
+      //       // Show the saved data table and heading
+      //       document.getElementById('savedDataHeading').style.display = 'block';
+      //       document.getElementById('savedDataTable').style.display = 'table';
+
+      // }
+
       function downloadExcel() {
-        const table = document.querySelector('#savedDataTable');
-            const rows = table.querySelectorAll('tr');
-            let csv = [];
-
-        // Extract headers
-        const headers = [];
-            table.querySelectorAll('th').forEach(header => {
-                headers.push(header.textContent);
-            });
-            csv.push(headers.join(','));
-
-        // Extract data rows
-        rows.forEach(row => {
-                const rowData = [];
-                row.querySelectorAll('td').forEach(cell => {
-                    rowData.push(cell.textContent);
-                });
-                csv.push(rowData.join(','));
-            });
-
-        // Create a CSV file
-        const csvContent = "data:text/csv;charset=utf-8," + csv.join('\n');
-        const encodedUri = encodeURI(csvContent);
-
-        // Create a temporary link to trigger the download
-        const link = document.createElement('a');
-            link.setAttribute('href', encodedUri);
-            link.setAttribute('download', 'saved_data.csv');
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-
-            // Show the saved data table and heading
-            document.getElementById('savedDataHeading').style.display = 'block';
-            document.getElementById('savedDataTable').style.display = 'table';
-        
+        const table = document.querySelector("#savedDataTable");
+        const ws = XLSX.utils.table_to_sheet(table);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Saved Data");
+        XLSX.writeFile(wb, "saved_data.xlsx");
       }
 
       // Initialize the table with 2 rows (as in the Excel example)
       window.onload = function () {
         document.getElementById("defaultOpen").click(); // Open the default tab
         document.getElementById("defaultOpen").click(); // Open the default tab
-            addRow("Inches");
-            addRow("Centimeters");
+        addRow("Inches");
+        addRow("Centimeters");
       };
     </script>
   </body>
